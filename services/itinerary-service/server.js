@@ -1,13 +1,22 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json());
+
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Root route - serve the frontend
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://ajay:1234@grocerystore.fa2rpq9.mongodb.net/travelgrid';
 mongoose.connect(MONGO_URI).then(() => {
@@ -147,6 +156,6 @@ app.get('/api/booking/:userId', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Unified Database service listening on port ${port}`);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`✅ TravelGrid server running on http://0.0.0.0:${port}`);
 });
