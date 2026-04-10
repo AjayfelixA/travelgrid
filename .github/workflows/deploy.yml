@@ -1,4 +1,4 @@
-name: TravelGrid CI/CD
+name: Kubernetes Deployment
 
 on:
   push:

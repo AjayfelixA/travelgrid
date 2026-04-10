@@ -1,4 +1,4 @@
-name: TravelGrid CI/CD
+name: Docker Build & Push
 
 on:
   push:
