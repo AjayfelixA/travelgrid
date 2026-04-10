@@ -1,0 +1,59 @@
+---
+- name: Provision Bastion/Build Server
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install required dependencies
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - git
+          - unzip
+        state: present
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Ensure Docker is running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Install AWS CLI
+      unarchive:
+        src: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /tmp
+        remote_src: yes
+    - command: /tmp/aws/install --update
+      args:
+        creates: /usr/local/bin/aws
+
+    - name: Install kubectl
+      get_url:
+        url: "https://dl.k8s.io/release/stable.txt"
+        dest: /tmp/k8s_version.txt
+    - shell: curl -LO "https://dl.k8s.io/release/$(cat /tmp/k8s_version.txt)/bin/linux/amd64/kubectl"
+      args:
+        creates: kubectl
+    - command: install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl

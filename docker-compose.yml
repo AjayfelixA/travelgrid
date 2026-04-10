@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  user-service:
+    build: ./services/user-service
+    ports:
+      - "8000:8000"
+    networks:
+      - travel-net
+
+  itinerary-service:
+    build: ./services/itinerary-service
+    ports:
+      - "3000:3000"
+    networks:
+      - travel-net
+
+  frontend:
+    build: ./services/frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - user-service
+      - itinerary-service
+    networks:
+      - travel-net
+
+networks:
+  travel-net:
+    driver: bridge

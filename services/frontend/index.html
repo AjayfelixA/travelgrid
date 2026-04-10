@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelGrid - Itinerary Planner</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <!-- Graphical Login Screen -->
+    <div id="loginScreen" class="login-wrapper">
+        <div class="login-card">
+            <div class="brand-wrapper">
+                G<span>M</span>R
+            </div>
+            
+            <div class="input-group">
+                <span class="input-label">Username</span>
+                <input type="text" id="loginUsername" required>
+            </div>
+            
+            <div class="input-group">
+                <span class="input-label">Password</span>
+                <input type="password" id="loginPassword" required>
+            </div>
+            
+            <button class="login-btn" onclick="performLogin()">SIGN IN</button>
+            <br>
+            <a href="#" onclick="alert('Please contact your DevOps administrator.')" class="forgot-link">forgot password</a>
+            
+            <div class="footer-brand">Travel<span style="color:#8b5cf6">Grid</span></div>
+        </div>
+    </div>
+
+    <div id="mainApp" style="display: none;">
+        <div class="top-contact-bar">
+            <div class="top-contact-content">
+                <div class="contact-item">
+                    <span>📍</span> Nagercoil
+                </div>
+                <div class="contact-group">
+                    <div class="contact-item">
+                        <span>📞</span> +91 9489820888, +91 9791436188, +91 7845046288
+                    </div>
+                    <div class="contact-item">
+                        <span>✉️</span> info@travelgrid.com
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="app-container">
+            <header>
+            <div class="logo">🌍 TravelGrid</div>
+            <nav>
+                <button id="loginBtn" class="btn secondary">Login</button>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h1>Plan Your Next Great Adventure</h1>
+                <p>Distributed Travel Itinerary Planner powered by Microservices</p>
+            </section>
+
+            <section class="planner-section">
+                <!-- Status Dashboard -->
+                <div class="card status-card">
+                    <h2>System Health</h2>
+                    <div class="status-item">
+                        <span>User Service:</span>
+                        <span id="userStatus" class="badge">Checking...</span>
+                    </div>
+                    <div class="status-item" style="margin-top: 10px;">
+                        <span>Itinerary Service:</span>
+                        <span id="itinStatus" class="badge">Checking...</span>
+                    </div>
+                </div>
+
+                <!-- User Registration Form -->
+                <div class="card" id="userForm">
+                    <h2>Register User</h2>
+                    <input type="text" id="username" placeholder="Username" required>
+                    <input type="email" id="email" placeholder="Email Address" required>
+                    <button class="btn primary" onclick="registerUser()">Register</button>
+                    <p id="userMsg" class="msg"></p>
+                </div>
+
+                <!-- Itinerary Creation Form -->
+                <div class="card" id="itineraryForm">
+                    <h2>Add Trip Node</h2>
+                    
+                    <input type="text" id="destination" list="destList" placeholder="📍 Destination" required autocomplete="off">
+                    <datalist id="destList">
+                        <option value="Delhi">🏙️ Delhi</option>
+                        <option value="Goa">🏖️ Goa</option>
+                        <option value="Ooty">⛰️ Ooty</option>
+                        <option value="Manali">🏔️ Manali</option>
+                        <option value="Kerala">🌴 Kerala</option>
+                        <option value="Chennai">🌊 Chennai</option>
+                        <option value="Bangalore">🏢 Bangalore</option>
+                    </datalist>
+
+                    <input type="text" id="dates" placeholder="📅 Dates (Start - End)" required>
+
+                    <input type="text" id="hotel" list="hotelList" placeholder="🏨 Hotel Details" autocomplete="off">
+                    <datalist id="hotelList">
+                        <option value="Taj Hotel">Taj Hotel</option>
+                        <option value="ITC Grand">ITC Grand</option>
+                        <option value="Budget Inn">Budget Inn</option>
+                        <option value="Treebo">Treebo</option>
+                        <option value="OYO Rooms">OYO Rooms</option>
+                    </datalist>
+
+                    <input type="text" id="transport" list="transList" placeholder="✈️ Transport (Flight #, Train)" autocomplete="off">
+                    <datalist id="transList">
+                        <option value="Flight">✈️ Flight</option>
+                        <option value="Train">🚆 Train</option>
+                        <option value="Bus">🚌 Bus</option>
+                        <option value="Cab">🚕 Cab</option>
+                    </datalist>
+
+                    <input class="custom-tags" id="activities" placeholder="🎟️ Planned Activities">
+                    <button class="btn primary" style="margin-top: 1rem" onclick="createItinerary()">Add Destination</button>
+                    <button class="btn secondary" style="margin-top: 0.5rem; width: 100%" onclick="showPackages(document.getElementById('destination').value)">View Matching Packages</button>
+                    <p id="itineraryMsg" class="msg"></p>
+                </div>
+                
+                <!-- Budget Planner Form -->
+                <div class="card" id="budgetForm">
+                    <h2>Budget Planner</h2>
+                    <p style="color:#64748b; font-size:0.85rem; margin-bottom:1rem;">Find smart recommendations strictly based on your budget limit.</p>
+                    <input type="number" id="budgetInput" placeholder="Enter Your Budget (₹)" required min="0">
+                    <button class="btn primary" style="background:linear-gradient(90deg, #8b5cf6, #ec4899); border:none;" onclick="findBudgetTrips()">Find Trips</button>
+                    <p id="budgetMsg" class="msg"></p>
+                </div>
+            </section>
+            
+            <section class="results-section" id="budgetResultsSection" style="display:none; margin-top:2rem;">
+                <h2>Suggested Trips For Your Budget</h2>
+                <p style="color:#64748b">Hand-picked curations optimizing your finances!</p>
+                <div class="packages-grid" id="budgetResultsList">
+                    <!-- Dynamic Items will appear here -->
+                </div>
+            </section>
+            
+            <section class="results-section">
+                <h2>Your Itinerary Workflow</h2>
+                <div class="itinerary-grid" id="itineraryList">
+                    <!-- Dynamic Items will appear here -->
+                </div>
+            </section>
+            
+            <section class="results-section" id="myBookingsSection" style="margin-top:2rem;">
+                <h2>My Bookings</h2>
+                <p style="color:#64748b; margin-bottom: 1rem">Review your finalized purchases below.</p>
+                <div class="packages-grid" id="myBookingsList">
+                    <!-- Bookings injected here -->
+                </div>
+            </section>
+        </main>
+        </div>
+    </div>
+    
+    <!-- Packages Screen (Hidden initially) -->
+    <div class="app-container" id="packagesApp" style="display: none;">
+        <header>
+            <div class="logo">🌍 TravelGrid Deals</div>
+            <nav>
+                <button class="btn secondary" onclick="goBackToHome()">Back to Home</button>
+            </nav>
+        </header>
+        
+        <main>
+            <section class="hero" style="margin: 2rem 0">
+                <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Available Travel Packages</h1>
+                <p id="packageSubtitle">Showing top deals for your selected destination</p>
+            </section>
+            
+            <div class="packages-grid" id="packagesList">
+                <!-- JS will inject package cards here -->
+            </div>
+        </main>
+    </div>
+    
+    <!-- Booking Summary Screen (Hidden initially) -->
+    <div class="app-container" id="bookingApp" style="display: none;">
+        <header>
+            <div class="logo">🌍 Booking Checkout</div>
+            <nav>
+                <button class="btn secondary" onclick="cancelBooking()">Cancel Booking</button>
+            </nav>
+        </header>
+        
+        <main>
+            <section class="card" id="bookingDetailsCard" style="margin-top:2rem;">
+                <!-- JS will inject booking summary here -->
+            </section>
+            <div style="text-align: right; margin-top:1.5rem;">
+                <button class="btn primary" style="background:#10b981" onclick="confirmBooking()">✅ Confirm Booking</button>
+            </div>
+        </main>
+    </div>
+    
+    <div id="toastContainer" class="toast-container"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <script src="app.js?v=23"></script>
+</body>
+</html>
