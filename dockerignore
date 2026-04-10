@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+.git
+.github
+.env
+Dockerfile
+docker-compose.yml
+k8s
+terraform
+ansible
