@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: travelgrid
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: travelgrid-app
+  namespace: travelgrid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: travelgrid-app
+  template:
+    metadata:
+      labels:
+        app: travelgrid-app
+    spec:
+      containers:
+        - name: travelgrid-app
+          image: ajayfelix12342/travelgrid-app:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: travelgrid-service
+  namespace: travelgrid
+spec:
+  type: LoadBalancer # This exposes the service to localhost on Docker Desktop
+  selector:
+    app: travelgrid-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
